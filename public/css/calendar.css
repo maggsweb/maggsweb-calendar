@@ -16,6 +16,10 @@
 }
 #calendar td.day {
     height: 70px;
+    width: 16%;
+}
+#calendar td.day.weekend {
+    width: 10%;
 }
 #calendar td.today {
     background-color: var(--today-background-color);
@@ -35,3 +39,15 @@
 #calendar .heading {
     font-size: 2em;
 }
+
+
+#calendar .events {
+    font-size: 0.9em;
+}
+#calendar .event {
+    border-radius: 3px;
+    background-color: orange;
+    margin-bottom: 2px;
+    padding: 5px;
+}
+

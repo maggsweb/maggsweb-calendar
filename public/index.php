@@ -11,7 +11,15 @@ if (file_exists('../dumpr.php')) {
 // Calendar Class
 include '../classes/MyCalendar.php';
 
+// Include Mock Events
+$events = include('../data/mock-events.php');
+
+// Calendar
 $calendar = new MyCalendar();
+//$calendar->setYear(xxx);
+//$calendar->setMonth(xxx);
+//$calendar->setRootPath(xxx);
+$calendar->setEvents($events,'date');
 $cal = $calendar->asObject();
 
 ?>
@@ -48,8 +56,17 @@ $cal = $calendar->asObject();
                 <?php foreach ($cal->weeks as $week) { ?>
                 <tr>
                     <?php foreach ($week->days as $day) { ?>
-                    <td class="day <?=$day->dayclass?> <?=$day->todayclass?>">
+                    <td class="day <?=$day->dayclass?> <?=$day->todayclass?> <?=$day->weekendclass?>">
                         <div class="daynumber right"><?=$day->day->number?><sup><?=$day->day->ordinal?></sup></div>
+                        <?php if($day->events){  ?>
+                        <div class="events">
+                        <?php foreach ($day->events as $event){ ?>
+                            <div class="event">
+                                <?=$event->title?>
+                            </div>
+                        <?php } ?>
+                        </div>
+                        <?php } ?>
                     </td>
                     <?php } ?>
                 </tr>
@@ -59,5 +76,7 @@ $cal = $calendar->asObject();
         </div>
     </body>
 </html>
+
 <?php
+
 //dump($cal);

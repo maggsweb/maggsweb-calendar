@@ -91,6 +91,22 @@ class MyCalendar
         return json_encode($this->_buildCalendar());
     }
 
+    /**
+     * Event Import
+     * @param array $eventsArray
+     * @param string $keyColumn
+     */
+    public function setEvents(array $eventsArray, string $keyColumn)
+    {
+        $this->events = [];
+        foreach($eventsArray as $event){
+            // Attempt to create a date key to group events
+            $dateKey = date('Y-m-d',strtotime($event[$keyColumn]));
+            // Add events to a date-keyed array
+            $this->events[$dateKey][] = $event;
+        }
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     private function _buildCalendar()
@@ -162,25 +178,30 @@ class MyCalendar
                 'daynumber'  => $N,
                 'dayclass'   => $n == $this->currentMonth ? '' : 'inactive',
                 'todayclass' => "$Y-$m-$d" == $this->today ? 'today' : '',
+                'weekendclass' => in_array($N,[6,7]) ? 'weekend' : '',
                 'insert'     => "$Y-$m-$d",
                 'link'       => '#',
-                'events'     => '',
+                'events'     => false,
             ];
 
+            // Add events, if they exist
+            if(isset($this->events["$Y-$m-$d"])){
+                $weeks[$w]['days'][$d]['events'] = $this->events["$Y-$m-$d"];
+            }
+
+            // Increment Day
             $theDate->modify('+ 1 day');
         }
 
         return [
           'month' => $month,
           'week'  => $week,
-          'weeks' => $weeks,
+          'weeks' => $weeks
         ];
     }
 
-    private function _hasEvents($dateObject)
-    {
-        return false;
-    }
+
+
 
     /**
      * Get 1st of current month, then track backwards to a Monday
