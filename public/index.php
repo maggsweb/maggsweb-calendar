@@ -3,12 +3,14 @@
 date_default_timezone_set('Europe/London');
 
 // Debug tool
-if(file_exists('../dumpr.php')) include '../dumpr.php';
+if (file_exists('../dumpr.php')) {
+    include '../dumpr.php';
+}
 
 // Calendar Class
 include '../classes/MyCalendar.php';
 
-$calendar = new MyCalendar;
+$calendar = new MyCalendar();
 $cal = $calendar->asObject();
 
 ?>
@@ -38,13 +40,13 @@ $cal = $calendar->asObject();
                     <th class="right"><a href="<?=$cal->month->next->link?>"><?=$cal->month->next->label?>&nbsp;&raquo;</a></th>
                 </tr>
                 <tr>
-                    <?php foreach ($cal->week->labels->full as $weekLabel){ ?>
+                    <?php foreach ($cal->week->labels->full as $weekLabel) { ?>
                     <th class="center"><?=$weekLabel?></th>
                     <?php } ?>
                 </tr>
-                <?php foreach ($cal->weeks as $week){ ?>
+                <?php foreach ($cal->weeks as $week) { ?>
                 <tr>
-                    <?php foreach ($week->days as $day){ ?>
+                    <?php foreach ($week->days as $day) { ?>
                     <td class="day <?=$day->dayclass?> <?=$day->todayclass?>">
                         <div class="daynumber right"><?=$day->day->number?><sup><?=$day->day->ordinal?></sup></div>
                     </td>
