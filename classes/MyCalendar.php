@@ -1,50 +1,53 @@
 <?php
 
-
-class MyCalendar {
-
-
+class MyCalendar
+{
     /**
-     * Month (without leading zeros)
+     * Month (without leading zeros).
+     *
      * @var int
      */
     public $currentMonth;
 
     /**
-     * 4-digit Year
+     * 4-digit Year.
+     *
      * @var int
      */
     public $currentYear;
 
     /**
-     * Default page URL
+     * Default page URL.
+     *
      * @var string
      */
     public $rootPath = '/';
 
     /**
-     * Private variables
+     * Private variables.
+     *
      * @var mixed
      */
-    private $currentWeek,
-            $previousYear,
-            $previousMonth,
-            $nextYear,
-            $nextMonth,
-            $today;
+    private $currentWeek;
+    private $previousYear;
+    private $previousMonth;
+    private $nextYear;
+    private $nextMonth;
+    private $today;
 
-    public function __construct() {
+    public function __construct()
+    {
 
         // Set default Month, Year
-        $this->currentYear  = isset($_GET['y']) && preg_match('/^[0-9]{4}$/',       $_GET['y']) ? (int)$_GET['y'] : (int)date('Y');
-        $this->currentMonth = isset($_GET['m']) && preg_match('/^([1-9]|1[012])$/', $_GET['m']) ? (int)$_GET['m'] : (int)date('n');
-        $this->currentWeek  = date('W', mktime(0,0,0,$this->currentMonth,1,$this->currentYear));
+        $this->currentYear = isset($_GET['y']) && preg_match('/^[0-9]{4}$/', $_GET['y']) ? (int) $_GET['y'] : (int) date('Y');
+        $this->currentMonth = isset($_GET['m']) && preg_match('/^([1-9]|1[012])$/', $_GET['m']) ? (int) $_GET['m'] : (int) date('n');
+        $this->currentWeek = date('W', mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear));
 
-        $this->previousYear  = $this->currentMonth == 1 ? $this->currentYear - 1 : $this->currentYear;
-        $this->previousMonth = $this->currentMonth == 1 ? 12                     : $this->currentMonth -1;
+        $this->previousYear = $this->currentMonth == 1 ? $this->currentYear - 1 : $this->currentYear;
+        $this->previousMonth = $this->currentMonth == 1 ? 12 : $this->currentMonth - 1;
 
         $this->nextYear = $this->currentMonth == 12 ? $this->currentYear + 1 : $this->currentYear;
-        $this->nextMonth = $this->currentMonth == 12 ? 1                      : $this->currentMonth + 1;
+        $this->nextMonth = $this->currentMonth == 12 ? 1 : $this->currentMonth + 1;
 
         $this->today = date('Y-m-d');
     }
@@ -54,7 +57,7 @@ class MyCalendar {
      */
     public function setMonth($month)
     {
-        $this->currentMonth = preg_match('/^([1-9]|1[012])$/', $month) ? (int)$month : (int)date('n');
+        $this->currentMonth = preg_match('/^([1-9]|1[012])$/', $month) ? (int) $month : (int) date('n');
     }
 
     /**
@@ -62,7 +65,7 @@ class MyCalendar {
      */
     public function setYear($year)
     {
-        $this->currentYear  = preg_match('/^[0-9]{4}$/', $year) ? (int)$year : (int)date('Y');
+        $this->currentYear = preg_match('/^[0-9]{4}$/', $year) ? (int) $year : (int) date('Y');
     }
 
     /**
@@ -92,27 +95,26 @@ class MyCalendar {
 
     private function _buildCalendar()
     {
-
         $month = [
             'previous' => [
-                'label' => date('F', mktime(0,0,0,$this->currentMonth-1, 1, $this->currentYear)),
-                'link' => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->previousYear, $this->previousMonth)
+                'label' => date('F', mktime(0, 0, 0, $this->currentMonth - 1, 1, $this->currentYear)),
+                'link'  => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->previousYear, $this->previousMonth),
             ],
             'current' => [
-                'label' => date('F Y', mktime(0,0,0,$this->currentMonth, 1, $this->currentYear)),
-                'link' => $this->rootPath
+                'label' => date('F Y', mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear)),
+                'link'  => $this->rootPath,
             ],
             'next' => [
-                'label' => date('F', mktime(0,0,0,$this->currentMonth+1, 1, $this->currentYear)),
-                'link' => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->nextYear, $this->nextMonth)
-            ]
+                'label' => date('F', mktime(0, 0, 0, $this->currentMonth + 1, 1, $this->currentYear)),
+                'link'  => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->nextYear, $this->nextMonth),
+            ],
         ];
 
         $week = [
             'labels' => [
-                'full' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                'short' => ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
-            ]
+                'full'  => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                'short' => ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'],
+            ],
         ];
 
         // Starting Monday
@@ -123,8 +125,7 @@ class MyCalendar {
 
         $weeks = [];
 
-        while($theDate <= $toDate){
-
+        while ($theDate <= $toDate) {
             $w = $theDate->format('W');     // week number
             $d = $theDate->format('d');     // day, with zeros
             $j = $theDate->format('j');     // day, without zeros
@@ -142,28 +143,28 @@ class MyCalendar {
             $weeks[$w]['weeknumber'] = $w;
             $weeks[$w]['days'][$d] = [
                 'day' => [
-                    'number' => $j,
-                    'fullname' => $l,
+                    'number'    => $j,
+                    'fullname'  => $l,
                     'shortname' => $D,
-                    'string' => $d,
-                    'ordinal' => $S,
+                    'string'    => $d,
+                    'ordinal'   => $S,
                 ],
                 'month' => [
                     'number' => $m,
                     'string' => $n,
                     'short'  => $M,
-                    'long'   => $F
+                    'long'   => $F,
                 ],
                 'year' => [
                     'short' => $y,
-                    'long' => $Y
+                    'long'  => $Y,
                 ],
-                'daynumber' => $N,
-                'dayclass' => $n == $this->currentMonth ? '' : 'inactive',
+                'daynumber'  => $N,
+                'dayclass'   => $n == $this->currentMonth ? '' : 'inactive',
                 'todayclass' => "$Y-$m-$d" == $this->today ? 'today' : '',
-                'insert' => "$Y-$m-$d",
-                'link' => "#",
-                'events' => ''
+                'insert'     => "$Y-$m-$d",
+                'link'       => '#',
+                'events'     => '',
             ];
 
             $theDate->modify('+ 1 day');
@@ -171,11 +172,10 @@ class MyCalendar {
 
         return [
           'month' => $month,
-          'week' => $week,
-          'weeks' => $weeks
+          'week'  => $week,
+          'weeks' => $weeks,
         ];
     }
-
 
     private function _hasEvents($dateObject)
     {
@@ -185,21 +185,26 @@ class MyCalendar {
     /**
      * Get 1st of current month, then track backwards to a Monday
      * to find the date the calendar should start.
-     * @return DateTime
+     *
      * @throws Exception
+     *
+     * @return DateTime
      */
     private function _startDate()
     {
         $dt = new DateTime();
-        $dt->setTimestamp(mktime(0,0,0,$this->currentMonth,1,$this->currentYear));
-        return $this->_findDay($dt,1, '- 1 day');
+        $dt->setTimestamp(mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear));
+
+        return $this->_findDay($dt, 1, '- 1 day');
     }
 
     /**
      * Get current month, then last day of month, then track forwards
      * until the next Sunday, to find the date that the calendar should end.
-     * @return DateTime
+     *
      * @throws Exception
+     *
+     * @return DateTime
      */
     private function _endDate()
     {
@@ -215,25 +220,25 @@ class MyCalendar {
             $this->currentMonth,
             $dt->format('t')
         );
-        return $this->_findDay($dt2,7, '+ 1 day');
+
+        return $this->_findDay($dt2, 7, '+ 1 day');
     }
 
-
     /**
-     * Recursive function to lookup a day number in reverse
+     * Recursive function to lookup a day number in reverse.
+     *
      * @param DateTime $dateTime
      * @param $dayNum
      * @param $modify
+     *
      * @return DateTime
      */
     private function _findDay(DateTime $dateTime, $dayNum, $modify)
     {
-        if($dateTime->format('N') == $dayNum){
+        if ($dateTime->format('N') == $dayNum) {
             return $dateTime;
         }
+
         return $this->_findDay($dateTime->modify($modify), $dayNum, $modify);
     }
-
-
-
 }
