@@ -2,8 +2,11 @@
 
 date_default_timezone_set('Europe/London');
 
-include 'dumpr.php';
-include 'MyCalendar.php';
+// Debug tool
+if(file_exists('../dumpr.php')) include '../dumpr.php';
+
+// Calendar Class
+include '../classes/MyCalendar.php';
 
 $calendar = new MyCalendar;
 $cal = $calendar->asObject();
@@ -12,43 +15,21 @@ $cal = $calendar->asObject();
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Portals</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <title>Calendar</title>
+        <link rel="stylesheet" href="css/bootstrap.3.2.0.min.css">
         <style type='text/css'>
-            .container-fluid {
-                margin: 30px;
-            }
-            #calendar th {
-                background-color: #F2F2F2;
-            }
-            #calendar td.inactive {
-                background-color: #eee;
-            }
-            #calendar td.day {
-                height: 70px;
-            }
-            #calendar td.today {
-                background-color: lightskyblue;
-            }
-            #calendar td div.daynumber {
-                font-size: 0.9em;
-            }
-            #calendar .center {
-                text-align: center;
-            }
-            #calendar .left {
-                text-align: left;
-            }
-            #calendar .right {
-                text-align: right;
-            }
-            #calendar .heading {
-                font-size: 2em;
+            :root {
+                --header-background-color: #ddd;
+                --inactive-background-color: #F2F2F2;
+                --today-background-color: lightskyblue;
             }
         </style>
+        <link rel="stylesheet" href="css/calendar.css">
     </head>
     <body>
         <div class='container-fluid'>
+
+            <p><a href="<?=$calendar->rootPath?>">Today</a></p>
 
             <table class="table table-bordered" id="calendar">
                 <tr>
@@ -57,7 +38,7 @@ $cal = $calendar->asObject();
                     <th class="right"><a href="<?=$cal->month->next->link?>"><?=$cal->month->next->label?>&nbsp;&raquo;</a></th>
                 </tr>
                 <tr>
-                    <?php foreach ($cal->week->labels as $weekLabel){ ?>
+                    <?php foreach ($cal->week->labels->full as $weekLabel){ ?>
                     <th class="center"><?=$weekLabel?></th>
                     <?php } ?>
                 </tr>
@@ -75,3 +56,5 @@ $cal = $calendar->asObject();
         </div>
     </body>
 </html>
+<?php
+dump($cal);

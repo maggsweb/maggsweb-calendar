@@ -1,2 +1,4 @@
 # maggsweb-calendar
-Simple PHP Calendar script
+Simple PHP Calendar script.
+
+

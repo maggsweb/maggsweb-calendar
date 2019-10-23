@@ -20,14 +20,13 @@ class MyCalendar {
      * Default page URL
      * @var string
      */
-    public $rootPath = '';
+    public $rootPath = '/';
 
     /**
-     * @var int
+     * Private variables
+     * @var mixed
      */
-    private $startWeekNumber,
-            $lastWeekNumber,
-            $currentWeek,
+    private $currentWeek,
             $previousYear,
             $previousMonth,
             $nextYear,
@@ -44,19 +43,14 @@ class MyCalendar {
         $this->previousYear  = $this->currentMonth == 1 ? $this->currentYear - 1 : $this->currentYear;
         $this->previousMonth = $this->currentMonth == 1 ? 12                     : $this->currentMonth -1;
 
-        $this->nextYear  = $this->currentMonth == 12 ? $this->currentYear + 1 : $this->currentYear;
+        $this->nextYear = $this->currentMonth == 12 ? $this->currentYear + 1 : $this->currentYear;
         $this->nextMonth = $this->currentMonth == 12 ? 1                      : $this->currentMonth + 1;
 
-        $this->startWeekNumber = (int)date('W', mktime(0,0,0, $this->currentMonth, 1, $this->currentYear));
-        $this->lastWeekNumber  = (int)date('W', mktime(0,0,0, $this->currentMonth, date('t'), $this->currentYear));
-
         $this->today = date('Y-m-d');
-        //dump($this);
-
     }
 
     /**
-     * @param int $month
+     * @param int|string $month
      */
     public function setMonth($month)
     {
@@ -64,7 +58,7 @@ class MyCalendar {
     }
 
     /**
-     * @param int $year
+     * @param int|string $year
      */
     public function setYear($year)
     {
@@ -96,14 +90,13 @@ class MyCalendar {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-
     private function _buildCalendar()
     {
 
         $month = [
             'previous' => [
                 'label' => date('F', mktime(0,0,0,$this->currentMonth-1, 1, $this->currentYear)),
-                'link' => $this->rootPath.'?y='.$this->previousYear.'&m='.($this->previousMonth)
+                'link' => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->previousYear, $this->previousMonth)
             ],
             'current' => [
                 'label' => date('F Y', mktime(0,0,0,$this->currentMonth, 1, $this->currentYear)),
@@ -111,19 +104,14 @@ class MyCalendar {
             ],
             'next' => [
                 'label' => date('F', mktime(0,0,0,$this->currentMonth+1, 1, $this->currentYear)),
-                'link' => $this->rootPath.'?y='.$this->nextYear.'&m='.($this->nextMonth)
+                'link' => sprintf('%s?y=%d&m=%d', $this->rootPath, $this->nextYear, $this->nextMonth)
             ]
         ];
 
         $week = [
             'labels' => [
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday'
+                'full' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                'short' => ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
             ]
         ];
 
@@ -177,9 +165,9 @@ class MyCalendar {
                 'link' => "#",
                 'events' => ''
             ];
+
             $theDate->modify('+ 1 day');
         }
-
 
         return [
           'month' => $month,
@@ -207,7 +195,6 @@ class MyCalendar {
         return $this->_findDay($dt,1, '- 1 day');
     }
 
-
     /**
      * Get current month, then last day of month, then track forwards
      * until the next Sunday, to find the date that the calendar should end.
@@ -222,7 +209,7 @@ class MyCalendar {
             $this->currentMonth,
             1
         );
-        $dt2 = new DateTime();
+        $dt2 = clone $dt;
         $dt2->setDate(
             $this->currentYear,
             $this->currentMonth,

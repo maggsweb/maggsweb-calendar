@@ -1,0 +1,37 @@
+/*:root {*/
+/*    --header-background-color: #ddd;*/
+/*    --inactive-background-color: #F2F2F2;*/
+/*    --today-background-color: lightskyblue;*/
+/*}*/
+
+.container-fluid {
+    margin: 30px;
+}
+#calendar th {
+    vertical-align: middle;
+    background-color: var(--header-background-color);
+}
+#calendar td.inactive {
+    background-color: var(--inactive-background-color);
+}
+#calendar td.day {
+    height: 70px;
+}
+#calendar td.today {
+    background-color: var(--today-background-color);
+}
+#calendar td div.daynumber {
+    font-size: 0.9em;
+}
+#calendar .center {
+    text-align: center;
+}
+#calendar .left {
+    text-align: left;
+}
+#calendar .right {
+    text-align: right;
+}
+#calendar .heading {
+    font-size: 2em;
+}
