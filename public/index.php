@@ -1,5 +1,6 @@
 <?php
 
+// Set TimeZone
 date_default_timezone_set('Europe/London');
 
 // Debug tool
@@ -59,4 +60,4 @@ $cal = $calendar->asObject();
     </body>
 </html>
 <?php
-dump($cal);
+//dump($cal);
